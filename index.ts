@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
   });
 
   io.on('connection', (socket) => {
-    socket.emit('connect', {message: 'a new client connected'})
+    console.log('hello')
 })
 
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
