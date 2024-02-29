@@ -2,7 +2,7 @@ import React from 'react'
 
 const CallRoom = () => {
   return (
-    <div>CallRoom</div>
+    <div>Hi from CallRoom</div>
   )
 }
 
