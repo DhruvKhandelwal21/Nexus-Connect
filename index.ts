@@ -10,7 +10,11 @@ app.use(express.json());
 app.use(cors());
 
 const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: "http://localhost:5173"
+  },
+});
 
 console.log(process.env.PORT)
 
@@ -21,7 +25,12 @@ app.get("/", (req, res) => {
   });
 
   io.on('connection', (socket) => {
-    console.log('hello')
+    socket.on('join-room', (roomId, userId) => {
+      console.log(`a new user ${userId} joined room ${roomId}`)
+      socket.join(roomId)
+      console.log(socket.broadcast.to(roomId).emit('user-connected', userId))
+      socket.broadcast.to(roomId).emit('user-connected', userId)
+  })
 })
 
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
