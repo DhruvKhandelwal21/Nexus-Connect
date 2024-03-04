@@ -73,7 +73,6 @@ console.log(joinedUsers)
   return (
     <div>
       {Object.keys(joinedUsers)?.map((userId:any)=> <Player key={userId} stream = {joinedUsers[userId].stream} playing = {joinedUsers[userId].playing} muted = {joinedUsers[userId].muted} />)}
-     
     </div>
   )
 }

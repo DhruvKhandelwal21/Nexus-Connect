@@ -25,6 +25,7 @@ app.get("/", (req, res) => {
   });
 
   io.on('connection', (socket) => {
+    //connection with client is represented by this socket
     socket.on('join-room', (roomId, userId) => {
       console.log(`a new user ${userId} joined room ${roomId}`)
       socket.join(roomId)

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import {v4 as uuidv4} from 'uuid'
+import { Button } from "../cssHelper/ui/button";
 const HomePage = () => {
   const navigate = useNavigate();
   const [roomId, setRoomId] = useState("");
@@ -19,13 +21,13 @@ const HomePage = () => {
 
   return (
     <div>
-      <button onClick={createRoomandJoin}>Create Meet</button>
+      <Button onClick={createRoomandJoin}>Create Meet</Button>
       <input
         type="text"
         placeholder="Enter room id"
         onChange={(e) => setRoomId(e.target.value)}
       />
-      <button onClick={joinRoom}>Join Meet</button>
+      <Button onClick={joinRoom}>Join Meet</Button>
     </div>
   );
 };

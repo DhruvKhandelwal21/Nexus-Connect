@@ -1,5 +1,5 @@
 import Peer from "peerjs";
-import { useEffect, useRef, useState, useContext } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSocket } from "../context/socketProvider";
 import { useParams } from 'react-router-dom';
 
