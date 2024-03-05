@@ -71,7 +71,7 @@ console.log(joinedUsers)
   }, [peerId, setJoinedUsers, streamState]);
   
   return (
-    <div>
+    <div className="bg-slate-800 h-screen">
       {Object.keys(joinedUsers)?.map((userId:any)=> <Player key={userId} stream = {joinedUsers[userId].stream} playing = {joinedUsers[userId].playing} muted = {joinedUsers[userId].muted} />)}
     </div>
   )
