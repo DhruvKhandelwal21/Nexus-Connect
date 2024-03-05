@@ -32,6 +32,11 @@ app.get("/", (req, res) => {
       console.log(socket.broadcast.to(roomId).emit('user-connected', userId))
       socket.broadcast.to(roomId).emit('user-connected', userId)
   })
+  socket.on('leave-room', (roomId, userId) => {
+    console.log(`a  user ${userId} left  joined room ${roomId}`)
+    socket.leave(roomId)
+    socket.broadcast.to(roomId).emit('user-left', userId)
+})
 })
 
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
