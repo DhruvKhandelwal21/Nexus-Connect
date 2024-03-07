@@ -4,6 +4,7 @@ import { useSocket } from '../context/socketProvider'
 import { useGetJoinedUsers } from '../context/joinedUsersProvider';
 import { useMediaPlayer } from '../hooks/useMediaPlayer'
 import Player from '../components/player';
+import Controls from '@/components/controls';
 
 
 const CallRoom = () => {
@@ -11,7 +12,6 @@ const CallRoom = () => {
   const {peer,peerId} = usePeer();
   const {socket} = useSocket();
   const {joinedUsers, setJoinedUsers} = useGetJoinedUsers();
-console.log(joinedUsers)
 
   useEffect(() => {
     if(!peer || !streamState || !socket ) return;
@@ -64,15 +64,16 @@ console.log(joinedUsers)
       ...prev,
       [peerId]: {
         stream: streamState,
-        muted: true,
+        muted: false,
         playing: true,
       },
     }));
-  }, [peerId, setJoinedUsers, streamState]);
+  }, [peerId, streamState]);
   
   return (
     <div className="bg-slate-800 h-screen">
       {Object.keys(joinedUsers)?.map((userId:any)=> <Player key={userId} stream = {joinedUsers[userId].stream} playing = {joinedUsers[userId].playing} muted = {joinedUsers[userId].muted} />)}
+      {joinedUsers[peerId] && <Controls peerId={peerId} />}
     </div>
   )
 }
