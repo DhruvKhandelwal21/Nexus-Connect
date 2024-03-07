@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useGetJoinedUsers } from "../../context/joinedUsersProvider";
-import { MicOff, Mic, PhoneOff, Video, VideoOff } from "lucide-react";
+import { MicOff, Mic, PhoneOff, Video, VideoOff, MessageSquareText } from "lucide-react";
 import { useSocket } from "@/context/socketProvider";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -88,20 +88,25 @@ const Controls = ({ peerId }) => {
   }
   return (
     <div className="bottom-0 fixed p-6 w-full">
-      <div className="flex justify-center gap-7">
-        {isMuteUser ? (
-          <MicOff className="cursor-pointer" color="red" size={30} onClick={handleToggleMic} />
-        ) : (
-          <Mic className="cursor-pointer" color="white" size={30} onClick={handleToggleMic} />
-        )}
-        {isDisablePlayer ? (
-          <VideoOff className="cursor-pointer" color="red" size={30} onClick={handleToggleVideo} />
-        ) : (
-          <Video className="cursor-pointer" color="white" size={30} onClick={handleToggleVideo} />
-        )}
-        <PhoneOff className="cursor-pointer" color="red" size={30} onClick={handleLeaveRoom} />
-      </div>
+  <div className="flex items-center justify-between">
+    <span className='font-semibold text-sm text-white'>{`${roomid}`}</span>
+    <div className='flex gap-5 items-center justify-center w-full'>
+      {isMuteUser ? (
+        <MicOff className="cursor-pointer" color="red" size={30} onClick={handleToggleMic} />
+      ) : (
+        <Mic className="cursor-pointer" color="white" size={30} onClick={handleToggleMic} />
+      )}
+      {isDisablePlayer ? (
+        <VideoOff className="cursor-pointer" color="red" size={30} onClick={handleToggleVideo} />
+      ) : (
+        <Video className="cursor-pointer" color="white" size={30} onClick={handleToggleVideo} />
+      )}
+      <PhoneOff className="cursor-pointer" color="red" size={30} onClick={handleLeaveRoom} />
     </div>
+    <MessageSquareText className="cursor-pointer" color="white" size={30} />
+  </div>
+</div>
+
   );
 };
 
