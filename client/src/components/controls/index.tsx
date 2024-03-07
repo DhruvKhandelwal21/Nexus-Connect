@@ -3,13 +3,11 @@ import { useGetJoinedUsers } from "../../context/joinedUsersProvider";
 import { MicOff, Mic, PhoneOff, Video, VideoOff } from "lucide-react";
 import { useSocket } from "@/context/socketProvider";
 import { useNavigate, useParams } from "react-router-dom";
-import cloneDeep from 'lodash'
 
 const Controls = ({ peerId }) => {
   const navigate = useNavigate();
   const {roomid} = useParams();
   const { joinedUsers, setJoinedUsers } = useGetJoinedUsers();
-  console.log(joinedUsers)
   const [isMuteUser, setIsMuteUser] = useState(false);
   const [isDisablePlayer, setIsDisablePlayer] = useState(false);
   const {socket} = useSocket();
@@ -26,6 +24,18 @@ const Controls = ({ peerId }) => {
     socket.emit('toggle-audio',roomid,peerId);
   };
 
+  const handleToggleVideo = () => {
+    setIsDisablePlayer(!isDisablePlayer)
+    setJoinedUsers((prevJoinedUsers) => ({
+      ...prevJoinedUsers,
+      [peerId]: {
+        ...prevJoinedUsers[peerId],
+        playing: !joinedUsers[`${peerId}`]?.playing,
+      },
+    }));
+    socket.emit('toggle-video',roomid,peerId);
+  };
+
   useEffect(() => {
    if(!socket) return;
    const handleToggle = (userId)=>{
@@ -37,6 +47,17 @@ const Controls = ({ peerId }) => {
       },
     }));
   }
+   
+  const handleToggleV = (userId)=>{
+    setJoinedUsers((prevJoinedUsers) => ({
+      ...prevJoinedUsers,
+      [userId]: {
+        ...prevJoinedUsers[userId],
+        playing: !prevJoinedUsers[`${userId}`]?.playing,
+      },
+    }));
+  }
+
 
    const handleUpdateToggleAudio = (userId) => {
     setTimeout(() => {
@@ -44,26 +65,22 @@ const Controls = ({ peerId }) => {
     }, 1000);
   };
 
+  const handleUpdateToggleVideo = (userId) => {
+    setTimeout(() => {
+      handleToggleV(userId);
+    }, 1000);
+  };
+
   socket.on('update-toggle-audio', handleUpdateToggleAudio);
+  socket.on('update-toggle-video', handleUpdateToggleVideo)
 
   return () => {
     // Cleanup the socket event listener when the component unmounts
     socket.off('update-toggle-audio', handleUpdateToggleAudio);
+    socket.off('update-toggle-video', handleUpdateToggleVideo);
   };
   }, [socket])
   
-
-  const handleToggleVideo = () => {
-    setIsDisablePlayer(!isDisablePlayer)
-    setJoinedUsers((prevJoinedUsers) => ({
-      ...prevJoinedUsers,
-      [peerId]: {
-        ...prevJoinedUsers[peerId],
-        playing: !joinedUsers[`${peerId}`]?.playing,
-      },
-    }));
-  };
-
   const handleLeaveRoom = ()=>{
       socket.emit('leave-room',roomid,peerId);
       navigate('/');
