@@ -37,6 +37,10 @@ app.get("/", (req, res) => {
     socket.leave(roomId)
     socket.broadcast.to(roomId).emit('user-left', userId)
 })
+  socket.on('toggle-audio',(roomId,userId)=>{
+    console.log(userId)
+    socket.broadcast.to(roomId).emit('update-toggle-audio', userId)
+  })
 })
 
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
