@@ -1,11 +1,19 @@
-import ReactPlayer from 'react-player'
-
-const Player = ({stream,playing,muted}) => {
+const Player = ({ stream, playing, muted }) => {
   return (
     <div>
-       <ReactPlayer url = {stream} playing = {playing} muted = {muted} />
+      <video
+        ref={(ref) => {
+          if (ref) {
+            const newStream = stream;
+            newStream.getVideoTracks()[0].enabled = playing;
+            ref.srcObject = newStream;
+          }
+        }}
+        autoPlay
+        muted={muted}
+      />
     </div>
-  )
-}
+  );
+};
 
-export default Player
+export default Player;
