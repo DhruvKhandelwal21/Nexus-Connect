@@ -26,11 +26,11 @@ app.get("/", (req, res) => {
 
   io.on('connection', (socket) => {
     //connection with client is represented by this socket
-    socket.on('join-room', (roomId, userId) => {
-      console.log(`a new user ${userId} joined room ${roomId}`)
+    socket.on('join-room', (roomId, userId,name) => {
+      console.log(`a new user ${name} joined room ${roomId}`)
       socket.join(roomId)
-      console.log(socket.broadcast.to(roomId).emit('user-connected', userId))
-      socket.broadcast.to(roomId).emit('user-connected', userId)
+      // console.log(socket.broadcast.to(roomId).emit('user-connected', userId))
+      socket.broadcast.to(roomId).emit('user-connected', userId, name)
   })
   socket.on('leave-room', (roomId, userId) => {
     console.log(`a  user ${userId} left  joined room ${roomId}`)
