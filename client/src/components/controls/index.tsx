@@ -3,6 +3,7 @@ import { useGetJoinedUsers } from "../../context/joinedUsersProvider";
 import { MicOff, Mic, PhoneOff, Video, VideoOff, MessageSquareText } from "lucide-react";
 import { useSocket } from "@/context/socketProvider";
 import { useNavigate, useParams } from "react-router-dom";
+import { cloneDeep } from "lodash";
 
 const Controls = ({ peerId }) => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const Controls = ({ peerId }) => {
   const {socket} = useSocket();
 
   const handleToggleMic = () => {
-    setIsMuteUser(!isMuteUser);
+    setIsMuteUser((prevIsMuteUser) => !prevIsMuteUser);
     setJoinedUsers((prevJoinedUsers) => ({
       ...prevJoinedUsers,
       [peerId]: {
@@ -25,7 +26,7 @@ const Controls = ({ peerId }) => {
   };
 
   const handleToggleVideo = () => {
-    setIsDisablePlayer(!isDisablePlayer)
+    setIsDisablePlayer((prevIsDisableUser) => !prevIsDisableUser)
     setJoinedUsers((prevJoinedUsers) => ({
       ...prevJoinedUsers,
       [peerId]: {
@@ -71,13 +72,21 @@ const Controls = ({ peerId }) => {
     }, 1000);
   };
 
+  const handleUserLeft = (userId)=>{
+    const data = cloneDeep(joinedUsers);
+    delete data[userId];
+    setJoinedUsers(data);
+  }
+
   socket.on('update-toggle-audio', handleUpdateToggleAudio);
-  socket.on('update-toggle-video', handleUpdateToggleVideo)
+  socket.on('update-toggle-video', handleUpdateToggleVideo);
+  socket.on('user-left', handleUserLeft)
 
   return () => {
     // Cleanup the socket event listener when the component unmounts
     socket.off('update-toggle-audio', handleUpdateToggleAudio);
     socket.off('update-toggle-video', handleUpdateToggleVideo);
+    socket.off('user-left',handleUserLeft)
   };
   }, [socket])
   
@@ -87,7 +96,7 @@ const Controls = ({ peerId }) => {
       window.location.reload();
   }
   return (
-    <div className="bottom-0 fixed p-6 w-full">
+    <div className="bottom-0 fixed p-3 h-[10%] w-full">
   <div className="flex items-center justify-between">
     <span className='font-semibold text-sm text-white'>{`${roomid}`}</span>
     <div className='flex gap-5 items-center justify-center w-full'>
