@@ -5,9 +5,12 @@ import { v4 as uuidv4 } from "uuid";
 import { Button } from "../cssHelper/ui/button";
 import { Input } from "@/cssHelper/ui/input";
 import { motion } from "framer-motion";
+import { useGetJoinedUsers } from "@/context/joinedUsersProvider";
 const HomePage = () => {
   const navigate = useNavigate();
   const [roomId, setRoomId] = useState("");
+  // const [userName,setUserName] = useState("");
+  const {userName, setUserName} = useGetJoinedUsers();
 
   const joinRoom = () => {
     if (roomId) {
@@ -34,7 +37,7 @@ const HomePage = () => {
             Connect face-to-face, no matter the place with Nexus Connect!
           </motion.div>
           <div className="flex items-center gap-3">
-            <Button className="bg-white text-black hover:bg-gray-300" onClick={createRoomandJoin}>
+            <Button className="bg-white text-black hover:bg-gray-300" disabled={userName===""} onClick={createRoomandJoin}>
               Create Meet
             </Button>
             <Input
@@ -43,8 +46,17 @@ const HomePage = () => {
               placeholder="Enter room id"
               onChange={(e) => setRoomId(e.target.value)}
             />
-            <Button className="bg-white text-black hover:bg-gray-300" onClick={joinRoom}>
-              Join Meet
+            <Input
+              className="w-1/4"
+              type="text"
+              placeholder="Enter Username"
+              onChange={(e) => setUserName(e.target.value)}
+            />
+            <Button 
+              className="bg-white text-black hover:bg-gray-300" 
+              disabled={userName===""||roomId===""} 
+              onClick={joinRoom}>
+            Join Meet
             </Button>
           </div>
         </div>

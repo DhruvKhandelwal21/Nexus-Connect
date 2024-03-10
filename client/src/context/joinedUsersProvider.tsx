@@ -12,17 +12,20 @@ interface childrenNode{
 // }
 
 interface joinedUserType{
-    joinedUsers: {};
+    joinedUsers: object;
     setJoinedUsers: (joinedUsers:any)=> void;
+    userName: string;
+    setUserName: (userName:any)=> void;
 }
 
 const joinedUserContext = createContext({} as joinedUserType);
 
 export const JoinedUserContextProvider:React.FC<childrenNode>  = ({children})=>{
    const [joinedUsers,setJoinedUsers] = useState({});
+   const [userName,setUserName] = useState("");
 
    return(
-    <joinedUserContext.Provider value={{joinedUsers, setJoinedUsers}}>
+    <joinedUserContext.Provider value={{joinedUsers, setJoinedUsers,userName,setUserName}}>
        {children}
     </joinedUserContext.Provider>
    )
