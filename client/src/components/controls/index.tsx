@@ -3,80 +3,71 @@ import { useGetJoinedUsers } from "../../context/joinedUsersProvider";
 import { MicOff, Mic, PhoneOff, Video, VideoOff, MessageSquareText } from "lucide-react";
 import { useSocket } from "@/context/socketProvider";
 import { useNavigate, useParams } from "react-router-dom";
-import { cloneDeep } from "lodash";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Controls = ({ peerId }) => {
   const navigate = useNavigate();
   const {roomid} = useParams();
-  const { joinedUsers, setJoinedUsers } = useGetJoinedUsers();
+  const { setHostUser, setGuestUser, hostUserName} = useGetJoinedUsers();
+  const toastOptions: any = {
+    position: "top-center",
+    autoClose: 8000,
+    pauseOnHover: true,
+    draggable: true,
+    theme: "light",
+  };
   const [isMuteUser, setIsMuteUser] = useState(false);
   const [isDisablePlayer, setIsDisablePlayer] = useState(false);
   const {socket} = useSocket();
 
   const handleToggleMic = () => {
     setIsMuteUser((prevIsMuteUser) => !prevIsMuteUser);
-    setJoinedUsers((prevJoinedUsers) => ({
-      ...prevJoinedUsers,
-      [peerId]: {
-        ...prevJoinedUsers[peerId],
-        muted: !prevJoinedUsers[`${peerId}`]?.muted,
-      },
+    setHostUser((prevJoinedUsers) => ({
+      ...prevJoinedUsers, muted: !prevJoinedUsers?.muted
     }));
     socket.emit('toggle-audio',roomid,peerId);
   };
 
   const handleToggleVideo = () => {
     setIsDisablePlayer((prevIsDisableUser) => !prevIsDisableUser)
-    setJoinedUsers((prevJoinedUsers) => ({
-      ...prevJoinedUsers,
-      [peerId]: {
-        ...prevJoinedUsers[peerId],
-        playing: !joinedUsers[`${peerId}`]?.playing,
-      },
+    setHostUser((prevJoinedUsers) => ({
+      ...prevJoinedUsers, playing: !prevJoinedUsers?.playing
     }));
     socket.emit('toggle-video',roomid,peerId);
   };
 
   useEffect(() => {
    if(!socket) return;
-   const handleToggle = (userId)=>{
-    setJoinedUsers((prevJoinedUsers) => ({
-      ...prevJoinedUsers,
-      [userId]: {
-        ...prevJoinedUsers[userId],
-        muted: !prevJoinedUsers[`${userId}`]?.muted,
-      },
+   const handleToggle = ()=>{
+    setGuestUser((prevJoinedUsers) => ({
+      ...prevJoinedUsers, muted: !prevJoinedUsers?.muted
     }));
   }
    
-  const handleToggleV = (userId)=>{
-    setJoinedUsers((prevJoinedUsers) => ({
-      ...prevJoinedUsers,
-      [userId]: {
-        ...prevJoinedUsers[userId],
-        playing: !prevJoinedUsers[`${userId}`]?.playing,
-      },
+  const handleToggleV = ()=>{
+    setGuestUser((prevJoinedUsers) => ({
+      ...prevJoinedUsers, playing: !prevJoinedUsers?.playing
     }));
   }
 
 
    const handleUpdateToggleAudio = (userId) => {
     setTimeout(() => {
-      handleToggle(userId);
+      handleToggle();
     }, 1000);
   };
 
   const handleUpdateToggleVideo = (userId) => {
     setTimeout(() => {
-      handleToggleV(userId);
+      handleToggleV();
     }, 1000);
   };
 
-  const handleUserLeft = (userId)=>{
-    const data = cloneDeep(joinedUsers);
-    delete data[userId];
-    setJoinedUsers(data);
-  }
+  const handleUserLeft = (name)=>{
+    toast(`${name} has left the room`,toastOptions);
+    setGuestUser(null);
+ }
 
   socket.on('update-toggle-audio', handleUpdateToggleAudio);
   socket.on('update-toggle-video', handleUpdateToggleVideo);
@@ -91,7 +82,7 @@ const Controls = ({ peerId }) => {
   }, [socket])
   
   const handleLeaveRoom = ()=>{
-      socket.emit('leave-room',roomid,peerId);
+      socket.emit('leave-room',roomid,hostUserName);
       navigate('/');
       window.location.reload();
   }
@@ -114,6 +105,7 @@ const Controls = ({ peerId }) => {
     </div>
     <MessageSquareText className="cursor-pointer" color="white" size={30} />
   </div>
+  <ToastContainer />
 </div>
 
   );

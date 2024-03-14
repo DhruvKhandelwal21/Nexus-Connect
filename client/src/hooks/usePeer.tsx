@@ -7,7 +7,7 @@ import { useGetJoinedUsers } from "@/context/joinedUsersProvider";
 export const usePeer = () => {
   const [peer, setPeer] = useState(null);
   const [peerId, setPeerId] = useState(null);
-  const { userName } = useGetJoinedUsers();
+  const { hostUserName } = useGetJoinedUsers();
   const {roomid} = useParams();
   const context = useSocket();
   
@@ -21,7 +21,7 @@ export const usePeer = () => {
     setPeer(peer);
     peer.on("open", (id) => {
       setPeerId(id);
-      socket.emit('join-room',roomid,id,userName)
+      socket.emit('join-room',roomid,id,hostUserName)
     });
   }, [socket, roomid]);
 

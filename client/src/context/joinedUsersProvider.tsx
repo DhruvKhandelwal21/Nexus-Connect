@@ -12,20 +12,32 @@ interface childrenNode{
 // }
 
 interface joinedUserType{
-    joinedUsers: object;
-    setJoinedUsers: (joinedUsers:any)=> void;
-    userName: string;
-    setUserName: (userName:any)=> void;
+    hostUser: any;
+    setHostUser: (joinedUsers:any)=> void;
+    guestUser: any;
+    setGuestUser: (joinedUsers:any)=> void;
+    hostUserName: string;
+    guestUserName: string;
+    setHostUserName: (userName:any)=> void;
+    setGuestUserName: (userName:any)=> void;
+    hostId: string;
+    guestId: string;
+    setHostId:(userId:any)=> void;
+    setGuestId: (userId:any)=> void;
 }
 
 const joinedUserContext = createContext({} as joinedUserType);
 
 export const JoinedUserContextProvider:React.FC<childrenNode>  = ({children})=>{
-   const [joinedUsers,setJoinedUsers] = useState({});
-   const [userName,setUserName] = useState("");
+   const [hostUser,setHostUser] = useState(null);
+   const [guestUser,setGuestUser] = useState(null)
+   const [hostUserName,setHostUserName] = useState("");
+   const [guestUserName,setGuestUserName] = useState("");
+   const [hostId,setHostId] = useState("")
+   const [guestId,setGuestId] = useState("");
 
    return(
-    <joinedUserContext.Provider value={{joinedUsers, setJoinedUsers,userName,setUserName}}>
+    <joinedUserContext.Provider value={{hostUser, setHostUser ,guestUser,setGuestUser,hostUserName, setHostUserName, guestUserName, setGuestUserName, hostId, setHostId, guestId, setGuestId}}>
        {children}
     </joinedUserContext.Provider>
    )
