@@ -12,7 +12,7 @@ app.use(cors());
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
   cors: {
-    origin: "http://localhost:5173"
+    origin: "*"
   },
 });
 
@@ -26,10 +26,25 @@ app.get("/", (req, res) => {
 
   io.on('connection', (socket) => {
     //connection with client is represented by this socket
+    socket.on('call-host',(name,roomId)=>{
+      if(!io.sockets.adapter.rooms.get(roomId)){
+        io.to(socket.id).emit('answer',("Invalid Room Id"));
+        return;
+    }else if(io.sockets.adapter.rooms.get(roomId).size >1){
+      io.to(socket.id).emit('answer',("Someone is in room, Come later!"));
+      return;
+    }
+
+      socket.broadcast.to(roomId).emit('call-answer', name,socket.id);
+    })
+   
+    socket.on('answer-to-guest',(answer,id)=>{
+      console.log(answer)
+      io.to(id).emit('answer',(answer));
+    })
     socket.on('join-room', (roomId, userId,name) => {
       console.log(`a new user ${name} joined room ${roomId}`)
       socket.join(roomId)
-      // console.log(socket.broadcast.to(roomId).emit('user-connected', userId))
       socket.broadcast.to(roomId).emit('user-connected', userId, name)
   })
   socket.on('leave-room', (roomId, userId) => {
@@ -38,11 +53,9 @@ app.get("/", (req, res) => {
     socket.broadcast.to(roomId).emit('user-left', userId)
 })
   socket.on('toggle-audio',(roomId,userId)=>{
-    console.log(userId)
     socket.broadcast.to(roomId).emit('update-toggle-audio', userId)
   })
   socket.on('toggle-video',(roomId,userId)=>{
-    console.log(userId)
     socket.broadcast.to(roomId).emit('update-toggle-video', userId)
   })
 })
