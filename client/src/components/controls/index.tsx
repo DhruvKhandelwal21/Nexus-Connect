@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const Controls = ({ peerId }) => {
   const navigate = useNavigate();
   const {roomid} = useParams();
-  const { setHostUser, setGuestUser, hostUserName} = useGetJoinedUsers();
+  const { setHostUser, setGuestUser, hostUserName, screenShare, setScreenShare} = useGetJoinedUsers();
   const toastOptions: any = {
     position: "top-center",
     autoClose: 8000,
@@ -19,6 +19,7 @@ const Controls = ({ peerId }) => {
   };
   const [isMuteUser, setIsMuteUser] = useState(false);
   const [isDisablePlayer, setIsDisablePlayer] = useState(false);
+  const [toggleScreenShare, setToggleScreenShare]=  useState(false);
   const {socket} = useSocket();
 
   const handleToggleMic = () => {

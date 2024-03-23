@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { usePeer } from "../hooks/usePeer";
 import { useSocket } from "../context/socketProvider";
 import { useGetJoinedUsers } from "../context/joinedUsersProvider";
-import { useMediaPlayer } from "../hooks/useMediaPlayer";
 import Player from "../components/player";
 import Controls from "@/components/controls";
 import { Button } from "@/cssHelper/ui/button";
@@ -10,8 +9,7 @@ import { ColorRing } from "react-loader-spinner";
 import "react-toastify/dist/ReactToastify.css";
 
 const CallRoom = () => {
-  const { streamState } = useMediaPlayer();
-  const { peer, peerId } = usePeer();
+  const { peer, peerId, streamState } = usePeer();
   const { socket } = useSocket();
   const {
     hostUserName,
@@ -31,7 +29,7 @@ const CallRoom = () => {
     name: "",
     id: "",
   });
-
+console.log(streamState)
   useEffect(() => {
     if (!socket) return;
     const handleAnswerCall = (name: string, id: string) => {
@@ -49,6 +47,7 @@ const CallRoom = () => {
       setGuestUserName(name);
       const options = { metadata: { name: hostUserName } };
       const call = peer.call(userId, streamState, options);
+      console.log(call)
       call.on("stream", (incomingStream) => {
         setGuestUser({
           stream: incomingStream,
@@ -75,7 +74,6 @@ const CallRoom = () => {
 
   useEffect(() => {
     if (!peer || !streamState) return;
-
     peer.on("call", (call) => {
       const { peer: callerId, metadata: data } = call;
       const { name } = data;

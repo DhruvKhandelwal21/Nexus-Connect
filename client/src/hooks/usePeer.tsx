@@ -3,10 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import { useSocket } from "../context/socketProvider";
 import { useParams } from 'react-router-dom';
 import { useGetJoinedUsers } from "@/context/joinedUsersProvider";
+import { useMediaPlayer } from "./useMediaPlayer";
 
 export const usePeer = () => {
   const [peer, setPeer] = useState(null);
   const [peerId, setPeerId] = useState(null);
+  const { streamState } = useMediaPlayer();
   const { hostUserName } = useGetJoinedUsers();
   const {roomid} = useParams();
   const context = useSocket();
@@ -14,7 +16,7 @@ export const usePeer = () => {
   const {socket} = context;
   const peerIdRef = useRef(null);
   useEffect(() => {
-    if(!socket || !roomid) return;
+    if(!socket || !roomid || !streamState ) return;
     if (peerIdRef.current) return;
     peerIdRef.current = true;
     const peer = new Peer();
@@ -23,7 +25,7 @@ export const usePeer = () => {
       setPeerId(id);
       socket.emit('join-room',roomid,id,hostUserName)
     });
-  }, [socket, roomid]);
+  }, [socket, roomid, streamState]);
 
-  return { peer, peerId };
+  return { peer, peerId, streamState };
 };
