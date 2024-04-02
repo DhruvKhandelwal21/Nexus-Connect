@@ -12,9 +12,7 @@ module.exports = {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
+      
     },
     extend: {
       colors: {
@@ -51,6 +49,10 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+      },
+      screens: {
+        // 2xl: "1400px",
+        xs: "300px",
       },
       borderRadius: {
         lg: "var(--radius)",

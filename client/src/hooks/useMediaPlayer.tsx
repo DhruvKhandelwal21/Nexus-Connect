@@ -1,14 +1,19 @@
-import { useEffect, useState } from "react";
-
+import { useEffect, useRef, useState } from "react";
+import { useStreamContext } from "@/context/streamProvider";
 export const useMediaPlayer = ()=>{
-    const [streamState,setStreamState] = useState(null);
+    const {myStream,setMyStream} = useStreamContext();
+    const streamRef = useRef(null);
+    // const [streamState,setStreamState] = useState(null);
     useEffect(()=>{
+        if(myStream) return;
+        if(streamRef.current) return;
+        streamRef.current = true;
         fetchVideoStream();
     },[])
     const fetchVideoStream = async ()=>{
         try{
          const stream = await navigator.mediaDevices.getUserMedia({audio:true,video:true})
-         setStreamState(stream)
+         setMyStream(stream)
         }catch(e){
             console.log(e);
         }
@@ -27,5 +32,5 @@ export const useMediaPlayer = ()=>{
             console.log(e);
         }
     }
-    return {streamState, fetchScreenStream}
+    return {streamState:myStream, fetchScreenStream}
 }
