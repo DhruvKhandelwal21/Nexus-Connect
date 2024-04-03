@@ -174,13 +174,13 @@ const CallRoom = () => {
   return (
     <div className="bg-slate-800 h-screen w-screen">
       <div
-        className={`flex xs:flex-col md:flex-row ${
+        className={`flex xs:flex-wrap md:flex-nowrap flex-row  ${
           guestUser ? "justify-between" : "justify-center"
         } h-[85vh] w-[100vw]`}
       >
        {screenShare ? (
           screenShare?.screen ? (
-            <div className='w-full h-full mt-5 p-2 flex justify-center'>
+            <div className='w-full h-full xs:max-h-[65%] md:max-h-[100%] mt-5 p-2 flex justify-center'>
             <Player key={"567"} stream={screenShare.stream} screen={true} />
             </div>
           ) : (
@@ -189,7 +189,7 @@ const CallRoom = () => {
         ) : null}
         
         {guestUser && (
-          <div className={`${screenShare?.screen ? 'w-1/5 h-1/4 justify-end mt-2' : 'w-full h-full justify-center mt-5'}   px-2 flex relative`}>
+          <div className={`${screenShare?.screen ? 'md:w-1/5 h-1/4 xs:w-1/3 justify-end mt-2' : 'w-full h-full xs:max-h-[65%] md:max-h-[100%] justify-center mt-5'}   px-2 flex relative`}>
             <Player
               key={guestId}
               stream={guestUser.stream}
@@ -204,7 +204,7 @@ const CallRoom = () => {
         <div
           className={`${
             guestUser || screenShare?.screen
-              ? "flex justify-end w-1/5 h-1/4 mt-2 mr-2 relative"
+              ? "flex justify-end md:w-1/5 h-1/4 xs:w-1/3 mt-2 mr-2 relative"
               : "flex justify-center items-center mt-5 w-4/5 mx-auto h-full p-2 relative"
           }`}
         >
@@ -220,12 +220,11 @@ const CallRoom = () => {
           ) : (
             <ColorRing />
           )}
-        </div>
-
-        {hostUser && (
+        </div>   
+      </div>
+      {hostUser && (
           <Controls peerId={peerId} fetchScreenStream={fetchScreenStream} />
         )}
-      </div>
       {openCallDialog.open && (
         <div className="absolute bottom-10 right-10 w-1/5 h-20 z-10 bg-white rounded-lg">
           <div className="flex flex-col gap-1 p-2">

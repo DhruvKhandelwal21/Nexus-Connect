@@ -12,7 +12,7 @@ export const useMediaPlayer = ()=>{
     },[])
     const fetchVideoStream = async ()=>{
         try{
-         const stream = await navigator.mediaDevices.getUserMedia({audio:true,video:true})
+         const stream = await navigator.mediaDevices.getUserMedia({audio:true, video: { facingMode: "user" }})
          setMyStream(stream)
         }catch(e){
             console.log(e);

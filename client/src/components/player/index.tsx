@@ -7,7 +7,7 @@ const Player = ({ stream, playing = true, muted = false, active = false, name = 
     <>
       <video
       style={{position:"relative"}}
-        className={`rounded-lg w-full h-full object-cover ${playing ? '':'opacity-50'}`}
+        className={`scale-x-[-1] rounded-lg w-full h-full object-cover ${playing ? '':'opacity-50'}`}
         ref={async (ref) => {
           if (ref) {
             if(!screen){
