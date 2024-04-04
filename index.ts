@@ -52,6 +52,9 @@ app.get("/", (req, res) => {
     socket.leave(roomId)
     socket.broadcast.to(roomId).emit('user-left', userId)
 })
+socket.on("msg-user", (roomid, name, msg) => {
+  socket.broadcast.to(roomid).emit('msg-rcv', name, msg);
+});
   socket.on('toggle-audio',(roomId,userId)=>{
     socket.broadcast.to(roomId).emit('update-toggle-audio', userId)
   })
