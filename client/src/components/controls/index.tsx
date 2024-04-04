@@ -5,11 +5,19 @@ import { useSocket } from "@/context/socketProvider";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import MessageDialog from "./messageDialog";
+interface msgObj {
+  msg: String;
+  type: String;
+  sender: String;
+  timeStamp: String;
+
+};
 
 const Controls = ({ peerId, fetchScreenStream }) => {
   const navigate = useNavigate();
   const {roomid} = useParams();
-  const { setHostUser, setGuestUser, hostUserName, setScreenShare, screenShare, guestUser } = useGetJoinedUsers();
+  const { setHostUser, setGuestUser, hostUserName, setScreenShare, screenShare, guestUser, guestId, guestUserName } = useGetJoinedUsers();
   const toastOptions: any = {
     position: "top-center",
     autoClose: 8000,
@@ -21,6 +29,8 @@ const Controls = ({ peerId, fetchScreenStream }) => {
   const [isDisablePlayer, setIsDisablePlayer] = useState(false);
   const [toggleScreenShare, setToggleScreenShare]=  useState(false);
   const [loading,setLoading] = useState(false);
+  const [openChatDialog,setOpenChatDialog] = useState(false);
+  const [allChats,setAllChats] = useState([]);
   const {socket} = useSocket();
 
   useEffect(() => {
@@ -57,15 +67,37 @@ const Controls = ({ peerId, fetchScreenStream }) => {
     } 
      setGuestUser(null);
   }
+  
+  const handleRecieveMsg = (userName,msg)=>{
+    const newMsg: msgObj = {
+      msg: msg,
+      sender: userName,
+      type: 'rcv',
+      timeStamp: Date.now().toString(),
+    };
+  
+    console.log(newMsg)
+    toast(`${userName} has sent you a message`, {
+      position: "bottom-right",
+      autoClose: 8000,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "light",
+      onClick: () => setOpenChatDialog(true)
+    });
+    setAllChats([...allChats,newMsg]);
+  }
  
    socket.on('update-toggle-audio', handleUpdateToggleAudio);
    socket.on('update-toggle-video', handleUpdateToggleVideo);
+   socket.on('msg-rcv',handleRecieveMsg);
    socket.on('user-left', handleUserLeft)
  
    return () => {
      // Cleanup the socket event listener when the component unmounts
      socket.off('update-toggle-audio', handleUpdateToggleAudio);
      socket.off('update-toggle-video', handleUpdateToggleVideo);
+     socket.off('msg-rcv',handleRecieveMsg);
      socket.off('user-left',handleUserLeft)
    };
    }, [socket,screenShare])
@@ -93,6 +125,18 @@ const Controls = ({ peerId, fetchScreenStream }) => {
     }));
     socket.emit('toggle-video',roomid,peerId);
   };
+
+  const sendMsgHandler = (msg)=>{
+    const newMsg: msgObj = {
+      msg: msg,
+      sender: hostUserName,
+      type: 'send',
+      timeStamp: Date.now().toString(),
+    };
+    setAllChats([...allChats,newMsg]);
+    console.log(roomid)
+    socket.emit('msg-user', roomid,hostUserName,msg);
+  }
 
   const handleScreenShareEnded = () => {
     if (screenShare && screenShare.stream) {
@@ -164,8 +208,11 @@ const Controls = ({ peerId, fetchScreenStream }) => {
       )}
       <PhoneOff className="cursor-pointer" color="red" size={30} onClick={handleLeaveRoom} />
     </div>
-    <MessageSquareText className="cursor-pointer" color="white" size={30} />
+    <MessageSquareText className="cursor-pointer" color="white" size={30} onClick = {()=>{setOpenChatDialog((prevState)=> !prevState)}} />
   </div>
+  {openChatDialog && (
+    <MessageDialog onClose = {()=>setOpenChatDialog((prevState)=> !prevState)} sendMsgHandler={sendMsgHandler} allChats={allChats} />
+  )}
   <ToastContainer />
 </div>
 
