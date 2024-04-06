@@ -39,7 +39,7 @@ const HomePage = () => {
         setCallAccepted(false);
       }
       setLoading(false);
-    }
+    } 
     socket.on('answer',handleCall);
     return () => {
       socket.off("answer", handleCall);
@@ -47,7 +47,10 @@ const HomePage = () => {
   }, [socket])
 
   useEffect(()=>{
-  if(callAccepted) navigate(`/${roomId}`);
+  if(callAccepted){ 
+    localStorage.setItem('username',hostUserName);
+    navigate(`/${roomId}`);
+  }
   },[callAccepted])
   
 
@@ -64,6 +67,7 @@ const HomePage = () => {
     }
   };
   const createRoomandJoin = () => {
+    localStorage.setItem('username',hostUserName);
     const roomId = uuidv4();
     navigate(`/${roomId}`);
   };

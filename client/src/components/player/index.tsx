@@ -7,7 +7,7 @@ const Player = ({ stream, playing = true, muted = false, active = false, name = 
     <>
       <video
       style={{position:"relative"}}
-        className={`scale-x-[-1] rounded-lg w-full h-full object-cover ${playing ? '':'opacity-50'}`}
+        className={`${!screen ? 'scale-x-[-1]' : ''} rounded-lg w-full h-full object-cover ${playing ? '':'opacity-50'}`}
         ref={async (ref) => {
           if (ref) {
             if(!screen){
@@ -39,19 +39,19 @@ const Player = ({ stream, playing = true, muted = false, active = false, name = 
         muted={muted}
       />
    {name && (
-    <div className="absolute z-10 bottom-0 left-0 px-3 py-1 w-fit mb-3 ml-3 text-ellipsis text-white bg-black bg-opacity-50 rounded-lg">
+    <div className="absolute bottom-0 left-0 px-3 py-1 w-fit mb-3 ml-3 text-ellipsis text-white bg-black bg-opacity-50 rounded-lg">
       {name}
     </div>
   )}
 
   {!playing && (
-    <div className="absolute z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
       <UserX color="white" width="40" />
     </div>
   )}
 
   {muted && (
-    <div className="absolute z-10 bottom-3 right-1 pr-2">
+    <div className="absolute bottom-3 right-1 pr-2">
       <MicOffIcon color="white" width="20" />
     </div>
   )}

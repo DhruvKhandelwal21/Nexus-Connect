@@ -3,7 +3,7 @@ import { Button } from "@/cssHelper/ui/button";
 import moment from "moment";
 const messageDialog = ({ onClose, sendMsgHandler, allChats }) => {
   const [sendMsg, setSendMsg] = useState("");
-
+  console.log(allChats)
   return (
     <div className="fixed bottom-20 right-5 z-50">
       <div
@@ -33,7 +33,7 @@ const messageDialog = ({ onClose, sendMsgHandler, allChats }) => {
                 <div className="flex flex-col">
                   <div className="flex gap-1 items-center">
                     <p className="font-semibold text-sm">{sender}</p>
-                    <p className="text-sm font-light">
+                    <p className="text-xs font-light">
                       {moment(parseInt(timeStamp)).format("HH:mm")}
                     </p>
                   </div>
@@ -45,7 +45,7 @@ const messageDialog = ({ onClose, sendMsgHandler, allChats }) => {
             );
           })}
         </div>
-        <div className="z-10 flex items-end gap-1 p-2">
+        <div className="flex items-end gap-1 p-2">
           <input
             className="border border-gray-300 p-2 rounded-md resize-none w-3/4"
             placeholder="Type your message here..."
