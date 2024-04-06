@@ -59,7 +59,6 @@ const Controls = ({ peerId, fetchScreenStream, handleLeave, roomid }) => {
    };
  
    const handleUserLeft = (name)=>{
-    console.log(guestUserName)
      toast(`${name ? name : 'user'} has left the room`,toastOptions);
      if(screenShare?.id && peerId!==screenShare?.id){
       screenShare.stream.getTracks().forEach(track => track.stop());
@@ -137,7 +136,6 @@ const Controls = ({ peerId, fetchScreenStream, handleLeave, roomid }) => {
       timeStamp: Date.now().toString(),
     };
     setAllChats([...allChats,newMsg]);
-    console.log(roomid)
     socket.emit('msg-user', roomid,hostUserName,msg);
   }
 
@@ -183,12 +181,7 @@ const Controls = ({ peerId, fetchScreenStream, handleLeave, roomid }) => {
       }
     }
   }
-  
-  // const handleLeaveRoom = ()=>{
-  //     socket.emit('leave-room',roomid,hostUserName);
-  //     navigate('/');
-  //     window.location.reload();
-  // }
+ 
   return (
     <div className="bottom-0 fixed p-3 h-[10%] w-full">
   <div className="flex items-center justify-between">

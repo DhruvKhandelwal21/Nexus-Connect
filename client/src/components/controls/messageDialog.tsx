@@ -3,7 +3,6 @@ import { Button } from "@/cssHelper/ui/button";
 import moment from "moment";
 const messageDialog = ({ onClose, sendMsgHandler, allChats }) => {
   const [sendMsg, setSendMsg] = useState("");
-  console.log(allChats)
   return (
     <div className="fixed bottom-20 right-5 z-50">
       <div

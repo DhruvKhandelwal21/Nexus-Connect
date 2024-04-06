@@ -7,10 +7,12 @@ import Controls from "@/components/controls";
 import { Button } from "@/cssHelper/ui/button";
 import { ColorRing } from "react-loader-spinner";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CallRoom = () => {
   const { peer, peerId, streamState, fetchScreenStream } = usePeer();
   const { socket } = useSocket();
+  console.log('hello')
   const {
     hostUserName,
     hostUser,
@@ -25,6 +27,8 @@ const CallRoom = () => {
     screenShare,
     setScreenShare,
   } = useGetJoinedUsers();
+  const {roomid} = useParams();
+  const navigate = useNavigate();
 
   const [openCallDialog, setOpenCallDialog] = useState({
     open: false,
@@ -32,7 +36,14 @@ const CallRoom = () => {
     id: "",
   });
   const hostUserRef = useRef(null);
-  // console.log(streamState);
+  const userReloadRef = useRef(null);
+
+  if(!localStorage.getItem('username') || !hostUserName){
+    localStorage.clear();
+    navigate('/');
+    window.location.reload();
+  }
+
   useEffect(() => {
     if (!socket) return;
     const handleAnswerCall = (name: string, id: string) => {
@@ -165,6 +176,44 @@ const CallRoom = () => {
     };
   }, [peer, streamState, guestId, screenShare]);
 
+  useEffect(()=>{
+      if(!socket) return;
+      let timeoutId;
+    const handleTimeout = () => {
+      let response = 'Host not responding to call!'
+      handleCallResponse(response);
+    };
+    if (openCallDialog.open) {
+      timeoutId = setTimeout(handleTimeout, 20000);
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  },[socket,openCallDialog.open])
+
+  useEffect(()=>{
+      if(!socket) return;
+    if(userReloadRef.current) return;
+     userReloadRef.current = true;
+     window.onpopstate = handleLeaveRoom;
+     window.onbeforeunload = handleLeaveRoom;
+     
+    return () => {
+    window.removeEventListener('popstate', handleLeaveRoom);
+    window.removeEventListener('beforeunload',handleLeaveRoom)  
+};
+},[socket])
+
+  const handleLeaveRoom = ()=>{
+    const name = localStorage.getItem('username')
+    if(!name) return;
+    localStorage.clear();
+    socket.emit('leave-room', roomid, name);
+    navigate('/');
+    window.location.reload();  
+  }
+
 
   const handleCallResponse = (response: string) => {
     socket.emit("answer-to-guest", response, openCallDialog.id);
@@ -223,10 +272,10 @@ const CallRoom = () => {
         </div>   
       </div>
       {hostUser && (
-          <Controls peerId={peerId} fetchScreenStream={fetchScreenStream} />
+          <Controls peerId={peerId} fetchScreenStream={fetchScreenStream} handleLeave={handleLeaveRoom} roomid = {roomid} />
         )}
       {openCallDialog.open && (
-        <div className="absolute bottom-10 right-10 w-1/5 h-20 z-10 bg-white rounded-lg">
+        <div className="absolute bottom-10 right-10 sm:w-1/5 xs:w-1/2 h-20 z-10 bg-white rounded-lg">
           <div className="flex flex-col gap-1 p-2">
             <span>
               {" "}
