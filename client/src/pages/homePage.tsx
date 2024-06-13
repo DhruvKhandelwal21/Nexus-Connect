@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4, validate as isValidUUID } from "uuid";
 import { Button } from "../cssHelper/ui/button";
 import { Input } from "@/cssHelper/ui/input";
-import { motion } from "framer-motion";
 import { useGetJoinedUsers } from "@/context/joinedUsersProvider";
 import { useSocket } from "@/context/socketProvider";
 import { Vortex } from "react-loader-spinner";
@@ -73,40 +72,40 @@ const HomePage = () => {
   };
 
 
+
   return (
-    <div className="relative">
-      <div className="absolute flex gap-10 mt-40 pt-15 px-5 w-1/2">
-        <div className="flex flex-col gap-4 px-4">
-          <motion.div
-            initial={{ x: -1000 }} 
-            animate={{ x: 0 }}
-            transition={{ type: "spring", stiffness: 120, duration: 1 }}
-            className="text-white text-4xl font-bold text-wrap"
+    <>
+      <div className=" justify-center items-center flex gap-10 pt-15 px-5 w-full h-full">
+        <div className="flex flex-col gap-4 px-4 items-center justify-center">
+          <p
+            className="text-white text-4xl font-bold text-wrap xs:hidden md:block text-center"
           >
             Connect face-to-face, no matter the place with Nexus Connect!
-          </motion.div>
-          <div className="flex items-center gap-3">
-            <Button className="bg-white text-black hover:bg-gray-300" disabled={hostUserName===""||roomId!=""} onClick={createRoomandJoin}>
-              Create Meet
-            </Button>
+          </p>
+          <div className="flex flex-col items-center gap-3 md:w-1/3 xs:w-full mt-6">
             <Input
-              className="w-1/2"
+              className="w-full"
               type="text"
               placeholder="Enter room id"
               onChange={(e) => setRoomId(e.target.value)}
             />
             <Input
-              className="w-1/4"
+              className="w-full"
               type="text"
               placeholder="Enter Username"
               onChange={(e) => setHostUserName(e.target.value)}
             />
+            <div className="flex gap-1 w-full">
+            <Button className="bg-white text-black hover:bg-gray-300 w-1/2" disabled={hostUserName===""||roomId!=""} onClick={createRoomandJoin}>
+              Create Meet
+            </Button>
             <Button 
-              className="bg-white text-black hover:bg-gray-300" 
+              className="bg-white text-black hover:bg-gray-300 w-1/2" 
               disabled={hostUserName===""||roomId===""} 
               onClick={joinRoom}>
             Join Meet
             </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -119,7 +118,7 @@ const HomePage = () => {
       )}
       <ToastContainer />
       
-    </div>
+    </>
   );
 };
 

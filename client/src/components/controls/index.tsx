@@ -14,7 +14,7 @@ interface msgObj {
 };
 
 const Controls = ({ peerId, fetchScreenStream, handleLeave, roomid }) => {
-  const { setHostUser, setGuestUser, hostUserName, setScreenShare, screenShare, guestUser, guestUserName } = useGetJoinedUsers();
+  const { setHostUser, setGuestUser, hostUserName, setScreenShare, screenShare, guestUser } = useGetJoinedUsers();
   const toastOptions: any = {
     position: "top-center",
     autoClose: 5000,
@@ -46,13 +46,13 @@ const Controls = ({ peerId, fetchScreenStream, handleLeave, roomid }) => {
      }));
    }
  
-    const handleUpdateToggleAudio = (userId) => {
+    const handleUpdateToggleAudio = () => {
      setTimeout(() => {
        handleToggle();
      }, 1000);
    };
  
-   const handleUpdateToggleVideo = (userId) => {
+   const handleUpdateToggleVideo = () => {
      setTimeout(() => {
        handleToggleV();
      }, 1000);
@@ -183,7 +183,7 @@ const Controls = ({ peerId, fetchScreenStream, handleLeave, roomid }) => {
   }
  
   return (
-    <div className="bottom-0 fixed p-3 h-[10%] w-full">
+    <div className="bottom-0 fixed sm:p-3 xs:p-2 h-[10%] w-full">
   <div className="flex items-center justify-between">
     <div className="group relative">
     <Copy  

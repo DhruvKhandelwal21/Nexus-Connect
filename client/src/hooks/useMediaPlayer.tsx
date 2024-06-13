@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useStreamContext } from "@/context/streamProvider";
 export const useMediaPlayer = ()=>{
     const {myStream,setMyStream} = useStreamContext();

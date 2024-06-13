@@ -12,7 +12,6 @@ import { useNavigate, useParams } from "react-router-dom";
 const CallRoom = () => {
   const { peer, peerId, streamState, fetchScreenStream } = usePeer();
   const { socket } = useSocket();
-  console.log('hello')
   const {
     hostUserName,
     hostUser,
@@ -87,6 +86,7 @@ const CallRoom = () => {
     if ( !guestId || !screenShare?.stream || screenShare?.id!=peerId) return;
     const options = { metadata: { name: hostUserName, screen:screenShare?.screen, type:'screen' } };
     const call = peer.call(guestId, screenShare?.stream, options);
+    console.log(call)
     if(screenShare?.screen==false){
       screenShare?.stream.getTracks().forEach(track => track.stop());
       setScreenShare(null)
@@ -103,15 +103,12 @@ const CallRoom = () => {
       const options = { metadata: { name: hostUserName,playing: currentHost.playing,muted:currentHost.muted, type:'call'} };
       const call = peer.call(userId, streamState, options);
       call.on("stream", (incomingStream) => {
-        console.log('hello')
         setGuestUser({
           stream: incomingStream,
           playing: true,
           muted: false,
           userName: name,
         });
-        // console.log(incomingStream);
-        // console.log(`recieved stream from ${userId}`);
       });
     };
   
